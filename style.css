@@ -1,0 +1,30 @@
+body {
+    padding:25px;
+}
+.jumbotron {
+    text-align:center;
+}
+.card {
+    width:100%;
+    margin-top: 30px;
+}
+.card-header {
+    background-color: #2980B9;
+    color:white;
+    height:30px;
+    padding: 0px 20px;
+}
+.form-labels {
+    color:black;
+}
+#add-train {
+    margin-top:25px;
+}
+.table {
+    color:black;
+    width:100%;
+    margin:0px;
+}
+#train-form {
+    padding:20px;
+}
