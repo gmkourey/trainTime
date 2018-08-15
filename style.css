@@ -2,7 +2,13 @@ body {
     padding:25px;
 }
 .jumbotron {
-    text-align:center;
+    text-align :center;
+    background-color: #2980B9;
+    color:white;
+}
+.btn-primary {
+    background-color: #2980B9;
+    border-color: #2980B9;
 }
 .card {
     width:100%;
@@ -19,6 +25,9 @@ body {
 }
 #add-train {
     margin-top:25px;
+}
+#current-time {
+    font-size: 20px;
 }
 .table {
     color:black;

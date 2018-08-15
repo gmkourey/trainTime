@@ -1,8 +1,3 @@
-var trainName;
-var trainDestination;
-var trainTime;
-var trainFrequency;
-
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyBAhh8JN12Xz7fLIavO-XuhO0V9bXHjAMI",
@@ -15,44 +10,58 @@ var trainFrequency;
   firebase.initializeApp(config);
 
   var database = firebase.database();
+  var currentTime = moment().format('h:mm A');
+  $('#current-time').text('The current time is: ' + currentTime);
+
 $('#add-train').on('click', function(event) {
     event.preventDefault();
 
-    trainName = $('#trainName').val().trim();
-    trainDestination = $('#trainDestination').val().trim();
-    trainTime = $('#trainTime').val().trim();
-    trainFrequency = $('#trainFrequency').val().trim();
-    console.log(trainFrequency);
+    var trainName = $('#trainName').val().trim();
+    var trainDestination = $('#trainDestination').val().trim();
+    var trainTime = $('#trainTime').val().trim();
+    var trainFrequency = $('#trainFrequency').val().trim();
 
-    
-
-    database.ref().push({
-        name: trainName,
-        destination: trainDestination,
-        time: trainTime,
-        frequency: trainFrequency
-      });
-
+database.ref().push({
+  name: trainName,
+  destination: trainDestination,
+  frequency: trainFrequency,
+  time: trainTime
+});
+$('#trainName').val('');
+$('#trainDestination').val('');
+$('#trainTime').val('');
+$('#trainFrequency').val('');
 });
 
 database.ref().on("child_added", function(snapshot) {
+  var trainName = snapshot.val().name;
+  var trainDestination = snapshot.val().destination;
+  var trainTime = snapshot.val().time;
+  var trainFrequency = snapshot.val().frequency;
 
-  var newRow = $('<tr>');
+  var trainTimeConverted = moment(trainTime, 'HH:mm').subtract(1,'years')
+  console.log(trainTimeConverted);
 
-  var name = $('<td>');
-  name.text(snapshot.val().name);
-  newRow.append(name);
+  var diffTime = moment().diff(moment(trainTimeConverted), "minutes");
+  console.log(diffTime);
 
-  var destination = $('<td>');
-  destination.text(snapshot.val().destination);
-  newRow.append(destination);
+  var tRemainder = diffTime % trainFrequency;
+  console.log(tRemainder);
 
-  var frequency = $('<td>');
-  frequency.text(snapshot.val().time);
-  newRow.append(frequency);
+  var tMinutesTillTrain = trainFrequency - tRemainder;
+  console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+  // Next Train
+  var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+ nextTrain = moment(nextTrain).format("h:mm A");
+
+  var newRow = $("<tr>").append(
+    $("<td>").text(trainName),
+    $("<td>").text(trainDestination),
+    $("<td>").text(trainFrequency),
+    $("<td>").text(nextTrain),
+    $("<td>").text(tMinutesTillTrain)
+  );
 
   $('tbody').append(newRow);
-  
-}, function(errorObject) {
-  console.log("Errors handled: " + errorObject.code);
 });
